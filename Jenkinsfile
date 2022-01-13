@@ -11,12 +11,15 @@ stages{
                 sh 'mvn clean package'
             }
             post {
-                success {
+                always {
                     echo 'Now Archiving...'
-                    archiveArtifacts artifacts: '**/target/*.war'
+                    junit(
+                        allowEmptyResults: true,
+                        testResults: '**/*.xml'
+                    )
                     recordIssues(
                     enabledForFailure: true, aggregatingResults: true,
-                    tools: [java(), checkStyle(pattern: '**/*.war', reportEncoding: 'UTF-8'), findBugs(pattern: '**/*.war')]
+                    tools: [java(), checkStyle(pattern: '**/*.xml', reportEncoding: 'UTF-8'), findBugs(pattern: '**/*.xml')]
             )
                 }
             }
